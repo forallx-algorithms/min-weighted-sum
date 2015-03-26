@@ -5,7 +5,7 @@
   @date 26.03.2015
 */
 
-// TODO: ties, calc completion time, fread
+// TODO: ties, fread
 
 // Calculate greedy score of a data instance using difference
 // @param {Array.<Integer, Integer>} d
@@ -26,15 +26,31 @@ function calcScoreRation(d) {
 }
 
 // Calculate min weighted sum order
-// @param {}
+// @param {Array.<Array>} d
+// @param {Function} sScoreFn Function for calculating greedy score
+// @return {Array.<Array>}
 function calcMinWeightedOrder(d, cScoreFn) {
-  if(cScoreFn === undefined) cScoreFn = calcScoreDiff;
+  if(cScoreFn === undefined) cScoreFn = calcScoreRation;
 
   var mCalcScore = function(di) { return {score: cScoreFn(di), data: di}; };
   var sByScore = function(f, s) { return s.score - f.score; };
   var mExtract = function(mdi) { return mdi.data; }
 
   return d.map(mCalcScore).sort(sByScore).map(mExtract);
+}
+
+// Calculate completion time of an given array
+function calcCompletionTime(d) {
+  var clength = 0;
+  var ctime = 0;
+
+  for(var i in d) {
+    clength += d[i][1];
+
+    ctime += d[i][0]*clength;
+  }
+
+  return ctime;
 }
 
 // section: Tests
@@ -61,5 +77,8 @@ function test4(){
   return r[0][0] == 3 && r[1][0] == 1;
 }
 console.log("Case 4:", test4());
+
+console.log("Case 5:", calcCompletionTime(calcMinWeightedOrder(dataSample)) == 22, calcCompletionTime(calcMinWeightedOrder(dataSample)));
+console.log("Case 6:", calcCompletionTime(calcMinWeightedOrder(dataSample, calcScoreDiff)) == 23);
 
 

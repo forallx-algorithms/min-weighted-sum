@@ -5,8 +5,6 @@
   @date 26.03.2015
 */
 
-// TODO: ties, fread
-
 // Calculate greedy score of a data instance using difference
 // @param {Array.<Integer, Integer>} d
 // @return {Integer}
@@ -17,12 +15,8 @@ function calcScoreDiff(d) {
 // Calculate greedy score of a data instance using ratio
 // @param {Array.<Integer, Integer>} d
 // @return {Float}
-function calcScoreRation(d) {
-  if(d[1] == 0) {
-    return 0;
-  } else {
-    return d[0]/d[1];
-  }
+function calcScoreRatio(d) {
+  return (d[1] == 0) ? 0 : d[0]/d[1];
 }
 
 // Calculate min weighted sum order
@@ -30,11 +24,15 @@ function calcScoreRation(d) {
 // @param {Function} sScoreFn Function for calculating greedy score
 // @return {Array.<Array>}
 function calcMinWeightedOrder(d, cScoreFn) {
-  if(cScoreFn === undefined) cScoreFn = calcScoreRation;
+  if(cScoreFn === undefined) cScoreFn = calcScoreRatio;
 
   var mCalcScore = function(di) { return {score: cScoreFn(di), data: di}; };
-  var sByScore = function(f, s) { return s.score - f.score; };
-  var mExtract = function(mdi) { return mdi.data; }
+  var sByScore = function(f, s) {
+    var sr = s.score - f.score;
+
+    return sr ? sr : s.data[0] - f.data[0];
+  };
+  var mExtract = function(mdi)  { return mdi.data; }
 
   return d.map(mCalcScore).sort(sByScore).map(mExtract);
 }
@@ -60,19 +58,24 @@ var dataSample = [
   [1,2]
 ];
 
+var dataSampleEqualDiff = [
+  [1,3],
+  [3,5]
+];
+
 console.log("Case 1:", calcScoreDiff(dataSample[0])==(dataSample[0][0]-dataSample[0][1]), calcScoreDiff(dataSample[0]));
 
 function test2(){
   var r = calcMinWeightedOrder(dataSample);
 
-  return r[0][0] == 1 && r[1][0] == 3;
+  return r[0][0] == 3 && r[1][0] == 1;
 }
 console.log("Case 2:", test2());
 
-console.log("Case 3:", calcScoreRation(dataSample[0])==dataSample[0][0]/dataSample[0][1]);
+console.log("Case 3:", calcScoreRatio(dataSample[0])==dataSample[0][0]/dataSample[0][1]);
 
 function test4(){
-  var r = calcMinWeightedOrder(dataSample, calcScoreRation);
+  var r = calcMinWeightedOrder(dataSample, calcScoreRatio);
 
   return r[0][0] == 3 && r[1][0] == 1;
 }
@@ -80,5 +83,13 @@ console.log("Case 4:", test4());
 
 console.log("Case 5:", calcCompletionTime(calcMinWeightedOrder(dataSample)) == 22, calcCompletionTime(calcMinWeightedOrder(dataSample)));
 console.log("Case 6:", calcCompletionTime(calcMinWeightedOrder(dataSample, calcScoreDiff)) == 23);
+
+
+function test7(){
+  var r = calcMinWeightedOrder(dataSampleEqualDiff, calcScoreDiff);
+
+  return r[0][0] == 3 && r[1][0] == 1;
+}
+console.log("Case 7:", test7());
 
 

@@ -5,7 +5,7 @@
   @date 26.03.2015
 */
 
-// TODO: ties, ration, calc completion time, refactor, fread
+// TODO: ties, calc completion time, fread
 
 // Calculate greedy score of a data instance using difference
 // @param {Array.<Integer, Integer>} d
@@ -27,10 +27,10 @@ function calcScoreRation(d) {
 
 // Calculate min weighted sum order
 // @param {}
-function calcMinWeightedOrder(d, diffFn) {
-  if(diffFn === undefined) diffFn = calcScoreDiff;
+function calcMinWeightedOrder(d, cScoreFn) {
+  if(cScoreFn === undefined) cScoreFn = calcScoreDiff;
 
-  var mCalcScore = function(di) { return {score: diffFn(di), data: di}; };
+  var mCalcScore = function(di) { return {score: cScoreFn(di), data: di}; };
   var sByScore = function(f, s) { return s.score - f.score; };
   var mExtract = function(mdi) { return mdi.data; }
 

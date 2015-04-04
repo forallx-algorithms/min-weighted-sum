@@ -1,5 +1,5 @@
 /*
-  Calculates min weighted sum order
+  Calculates minimum weighted sum of completion times.
 
   @author Evgeniy Kuznetsov
   @date 26.03.2015
@@ -19,7 +19,7 @@ function calcScoreRatio(d) {
   return (d[1] == 0) ? 0 : d[0]/d[1];
 }
 
-// Calculate min weighted sum order
+// Calculate minimum weighted sum order
 // @param {Array.<Array>} d
 // @param {Function} sScoreFn Function for calculating greedy score
 // @return {Array.<Array>}
@@ -37,19 +37,21 @@ function calcMinWeightedOrder(d, cScoreFn) {
   return d.map(mCalcScore).sort(sByScore).map(mExtract);
 }
 
-// Calculate completion time of an given array
+// Calculate completion time of a given array
+// @param {Array.<Array>} d
+// @return {Integer}
 function calcCompletionTime(d) {
   var clength = 0;
   var ctime = 0;
 
   for(var i in d) {
     clength += d[i][1];
-
     ctime += d[i][0]*clength;
   }
 
   return ctime;
 }
+
 
 // section: Tests
 
